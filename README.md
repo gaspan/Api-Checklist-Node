@@ -25,3 +25,7 @@ run this command to run this application
 ```npm start```
 * How to test code
 ```npm test```
+
+* API 
+you can import this collection to your postman ```https://www.getpostman.com/collections/8f824acc2edc33d26fb9```
+in postman: click import, click tab link paste url above to text box, then click continue
