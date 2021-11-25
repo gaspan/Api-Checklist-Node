@@ -99,8 +99,8 @@ exports.protect = async (req, res, next) => {
       return next(
         new AppError(
           401,
-          "fail",
-          "You are not logged in! Please login in to continue",
+          "401",
+          "Not Authorized",
         ),
         req,
         res,
@@ -115,7 +115,7 @@ exports.protect = async (req, res, next) => {
     const user = await User.findById(decode.id);
     if (!user) {
       return next(
-        new AppError(401, "fail", "This user is no longer exist"),
+        new AppError(401, "401", "This user is no longer exist"),
         req,
         res,
         next,

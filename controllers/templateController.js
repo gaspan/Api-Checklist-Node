@@ -20,7 +20,11 @@ exports.create = async (req, res, next) => {
         },
       });
     } catch (err) {
-      next(err);
+        res.status(500).json({
+            "status": "500",
+            "error": "Server Error"
+          });
+    //   next(err);
     }
   };
 
@@ -51,7 +55,103 @@ exports.listAllChecklistTemplate = async (req, res, next) => {
         });
 
     } catch (error) {
-        next(error);
+        res.status(500).json({
+            "status": "500",
+            "error": "Server Error"
+          });
+        // next(error);
     }
 
+};
+
+exports.getTemplate = async (req, res, next) => {
+    try{
+        const doc = await Template.findById(req.params.templateId);
+
+        if (!doc) {
+            return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
+        }
+
+        let id = doc._id
+        let attributes = doc.toObject()
+        delete attributes._id
+        delete attributes.__v
+        let fullURl = req.protocol + '://' + req.get('host') + req.originalUrl.split('?')
+
+
+        res.status(200).json({
+            data: {
+                type: "templates",
+                id: id,
+                attributes: attributes,
+                links: {
+                    self:fullURl
+                }
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            "status": "500",
+            "error": "Server Error"
+          });
+        // next(error);
+    }
+};
+
+exports.updateTemplate = async (req, res, next) => {
+    try {
+        const doc = await Template.findByIdAndUpdate(req.params.templateId, req.body.data, {
+            new: true,
+            runValidators: true
+        });
+
+        if (!doc) {
+            return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
+        }
+
+        let id = doc._id
+        let attributes = doc.toObject()
+        delete attributes._id
+        delete attributes.__v
+        let fullURl = req.protocol + '://' + req.get('host') + req.originalUrl.split('?')
+
+        res.status(200).json({
+            data: {
+                type: "templates",
+                id: id,
+                attributes: attributes,
+                links: {
+                    self:fullURl
+                }
+            }
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            "status": "500",
+            "error": "Server Error"
+          });
+        // next(error);
+    }
+};
+
+exports.deleteTemplate = async (req, res, next) => {
+    try {
+        const doc = await Template.findByIdAndDelete(req.params.templateId);
+
+        if (!doc) {
+            return next(new AppError(404, 'fail', 'No document found with that id'), req, res, next);
+        }
+
+        res.status(204).json({
+            response: 'The 204 response.'
+        });
+    } catch (error) {
+        res.status(500).json({
+            "status": "500",
+            "error": "Server Error"
+          });
+        // next(error);
+    }
 };
